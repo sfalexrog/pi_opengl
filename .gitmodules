@@ -1,0 +1,6 @@
+[submodule "vendor/glslang"]
+	path = vendor/glslang
+	url = https://github.com/KhronosGroup/glslang
+[submodule "vendor/userland"]
+	path = vendor/userland
+	url = https://github.com/raspberrypi/userland
