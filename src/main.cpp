@@ -13,14 +13,17 @@
 # include "gfx/SDLContext.h"
 #endif
 
+#include "util/logger.h"
+
 int main()
 {
+    Log(S_DEBUG) << "Program start";
     #ifdef USE_EGL
     Gfx::EglContext ctx;
     #else
     Gfx::SDLContext ctx{1280, 720};
     #endif
-    std::cout << "Screen started" << std::endl;
+    Log(S_DEBUG) << "Context created";
     
     float r = 0.0f;
     while(1)

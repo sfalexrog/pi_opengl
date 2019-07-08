@@ -1,5 +1,7 @@
 #include "EGLContext.h"
 
+#include "util/logger.h"
+
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <GLES2/gl2.h>
@@ -7,6 +9,7 @@
 
 #include <bcm_host.h>
 #include <interface/mmal/mmal.h>
+
 
 namespace Gfx
 {
@@ -56,28 +59,28 @@ EglContext::EglContext() : data(new EglContext::ContextData)
 
     // Get default EGL display
     data->display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    assert(EGL_NO_DISPLAY != data->display);
+    LogAssert(EGL_NO_DISPLAY != data->display);
 
     // Initialize EGL library; we don't care about the version
     EGLBoolean result = eglInitialize(data->display, NULL, NULL);
-    assert(EGL_FALSE != result);
+    LogAssert(EGL_FALSE != result);
 
     EGLConfig config;
     EGLint num_config;
     // Choose the first suitable config
     result = eglChooseConfig(data->display, GAttribList, &config, 1, &num_config);
-    assert(EGL_FALSE != result);
+    LogAssert(EGL_FALSE != result);
 
     // Set the context as an OpenGL ES config
     result = eglBindAPI(EGL_OPENGL_ES_API);
-    assert(EGL_FALSE != result);
+    LogAssert(EGL_FALSE != result);
 
     // Create actual context handle
     data->context = eglCreateContext(data->display, config, EGL_NO_CONTEXT, GCtxAttribList);
-    assert(EGL_FALSE != result);
+    LogAssert(EGL_FALSE != result);
 
     int32_t success = graphics_get_display_size(0, &data->screenWidth, &data->screenHeight);
-    assert(0 <= success);
+    LogAssert(0 <= success);
 
     data->dstRect.x = 0;
     data->dstRect.y = 0;
@@ -121,10 +124,10 @@ EglContext::EglContext() : data(new EglContext::ContextData)
         config,
         &data->nativeWindow,
         /* attrib_list */ NULL);
-    assert(EGL_NO_SURFACE != data->surface);
+    LogAssert(EGL_NO_SURFACE != data->surface);
 
     // Finally, make our context current
-    assert(false != makeCurrent());
+    LogAssert(false != makeCurrent());
 }
 
 bool EglContext::makeCurrent()

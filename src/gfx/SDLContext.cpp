@@ -1,5 +1,7 @@
 #include "SDLContext.h"
 
+#include "util/logger.h"
+
 #include <SDL.h>
 
 namespace Gfx
@@ -9,6 +11,11 @@ namespace /* anonymous */
 {
     void nullCallback(EventPtr ev)
     {
+        SDL_Event* sev = static_cast<SDL_Event*>(ev);
+        if (sev->type == SDL_QUIT)
+        {
+            LogAssert(false);
+        }
         return;
     }
 }
@@ -42,9 +49,13 @@ SDLContext::SDLContext(uint32_t width, uint32_t height) : data(new SDLContext::C
 
     data->win = SDL_CreateWindow("pi_opengl", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                  width, height, SDL_WINDOW_OPENGL);
+    LogAssert(nullptr != data->win);
 
     data->ctx = SDL_GL_CreateContext(data->win);
-    SDL_GL_MakeCurrent(data->win, data->ctx);
+    LogAssert(nullptr != data->ctx);
+
+    int result = SDL_GL_MakeCurrent(data->win, data->ctx);
+    LogAssert(0 == result);
 }
 
 SDLContext::~SDLContext()
