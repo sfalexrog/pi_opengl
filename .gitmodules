@@ -4,3 +4,7 @@
 [submodule "vendor/userland"]
 	path = vendor/userland
 	url = https://github.com/raspberrypi/userland
+[submodule "vendor/SDL2"]
+	path = vendor/SDL2
+	url = https://github.com/spurious/SDL-mirror
+
