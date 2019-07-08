@@ -43,6 +43,7 @@ target_include_directories(OpenGl INTERFACE ${gles2_header_path} ${egl_header_pa
 add_executable(gl_camera
     main.cpp
     util/logger.cpp
+    gfx/Shader.cpp
 )
 
 if (USE_EGL)
