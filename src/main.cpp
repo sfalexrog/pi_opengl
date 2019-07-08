@@ -7,9 +7,19 @@
 
 #include "gfx/Context.h"
 
+#ifdef USE_EGL
+# include "gfx/EGLContext.h"
+#else
+# include "gfx/SDLContext.h"
+#endif
+
 int main()
 {
-    Gfx::Context ctx;
+    #ifdef USE_EGL
+    Gfx::EglContext ctx;
+    #else
+    Gfx::SDLContext ctx{1280, 720};
+    #endif
     std::cout << "Screen started" << std::endl;
     
     float r = 0.0f;

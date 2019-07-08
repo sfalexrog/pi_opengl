@@ -1,4 +1,4 @@
-#include "Context.h"
+#include "EGLContext.h"
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -11,7 +11,7 @@
 namespace Gfx
 {
 
-struct ContextData
+struct EglContext::ContextData
 {
     EGLDisplay display;
     EGLSurface surface;
@@ -47,7 +47,7 @@ const EGLint GCtxAttribList[] = {
     EGL_NONE
 };
 
-Context::Context() : data(new ContextData)
+EglContext::EglContext() : data(new EglContext::ContextData)
 {
     // Initialize broadcom host
     bcm_host_init();
@@ -127,7 +127,7 @@ Context::Context() : data(new ContextData)
     assert(false != makeCurrent());
 }
 
-bool Context::makeCurrent()
+bool EglContext::makeCurrent()
 {
     return EGL_FALSE != eglMakeCurrent(
         data->display,
@@ -136,24 +136,29 @@ bool Context::makeCurrent()
         data->context);
 }
 
-Context::~Context()
+EglContext::~EglContext()
 {
     // TODO: free all resources
 }
 
-void Context::swap()
+void EglContext::swap()
 {
     eglSwapBuffers(data->display, data->surface);
 }
 
-uint32_t Context::getHeight()
+uint32_t EglContext::getHeight()
 {
     return data->screenHeight;
 }
 
-uint32_t Context::getWidth()
+uint32_t EglContext::getWidth()
 {
     return data->screenWidth;
+}
+
+void EglContext::setEventCallback(std::function<void(EventPtr)> &cb)
+{
+    throw std::bad_exception();
 }
 
 }

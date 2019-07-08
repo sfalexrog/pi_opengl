@@ -40,22 +40,38 @@ add_library(OpenGl INTERFACE)
 target_link_libraries(OpenGl INTERFACE ${gles2_lib} ${egl_lib})
 target_include_directories(OpenGl INTERFACE ${gles2_header_path} ${egl_header_path})
 
-find_library(bcm_host_lib
-    NAMES
-        bcm_host
-    HINTS
-        /opt/vc/lib
-)
-
-add_library(BcmHost INTERFACE)
-target_link_libraries(BcmHost INTERFACE ${bcm_host_lib})
-
 add_executable(gl_camera
     main.cpp
-    gfx/Context.cpp
 )
 
-target_link_libraries(gl_camera
+if (USE_EGL)
+    message(STATUS "Using EGL context")
+    find_library(bcm_host_lib
+        NAMES
+            bcm_host
+        HINTS
+            /opt/vc/lib
+        )
+
+    add_library(BcmHost INTERFACE)
+    target_link_libraries(BcmHost INTERFACE ${bcm_host_lib})
+
+    target_sources(gl_camera PRIVATE
+        gfx/EGLContext.cpp
+        )
+    target_link_libraries(gl_camera PUBLIC BcmHost)
+    target_compile_definitions(gl_camera PUBLIC USE_EGL)
+else()
+    message(STATUS "Using SDL GL context")
+    target_sources(gl_camera PRIVATE
+        gfx/SDLContext.cpp
+        )
+    target_link_libraries(gl_camera PUBLIC
+        SDL2-static
+        )
+    target_compile_definitions(gl_camera PUBLIC USE_SDL)
+endif()
+
+target_link_libraries(gl_camera PUBLIC
     OpenGl
-    BcmHost
 )
